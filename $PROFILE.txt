@@ -1,0 +1,2 @@
+Set-Alias cr "cargo run"
+Set-Alias cb "cargo build"
