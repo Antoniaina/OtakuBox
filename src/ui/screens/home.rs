@@ -1,7 +1,9 @@
+use std::vec;
+
 use ratatui::{
-    layout::{Constraint, Direction, Layout},
+    layout::{Alignment, Constraint, Direction, Layout},
     style::{Color, Modifier, Style}, 
-    text::Span, 
+    text::{Line, Span}, 
     widgets::{Block, Borders, Paragraph, Wrap}, 
     Frame
 };
@@ -11,20 +13,52 @@ pub fn draw_home(f: &mut Frame) {
         .direction(Direction::Vertical)
         .margin(2)
         .constraints([
-            Constraint::Length(3), 
-            Constraint::Min(5),   
+            Constraint::Length(10), 
+            Constraint::Min(6),   
             Constraint::Length(5), 
         ])
         .split(f.area());
 
-    let title = Paragraph::new("Streameko")
-        .style(Style::default().fg(Color::Cyan))
-        .block(Block::default().borders(Borders::ALL).title("WELCOME"));
-    f.render_widget(title, chunks[0]);
+    let logo: &'static str = r#"
+███████╗████████╗██████╗ ███████╗ █████╗ ███╗   ███╗███████╗██╗  ██╗ ██████╗ 
+██╔════╝╚══██╔══╝██╔══██╗██╔════╝██╔══██╗████╗ ████║██╔════╝██║ ██╔╝██╔═══██╗
+███████╗   ██║   ██████╔╝█████╗  ███████║██╔████╔██║█████╗  █████╔╝ ██║   ██║
+╚════██║   ██║   ██╔══██╗██╔══╝  ██╔══██║██║╚██╔╝██║██╔══╝  ██╔═██╗ ██║   ██║
+███████║   ██║   ██║  ██║███████╗██║  ██║██║ ╚═╝ ██║███████╗██║  ██╗╚██████╔╝
+╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝ 
+"#;
 
-    let menu = Paragraph::new("Menu contents")
-        .block(Block::default().borders(Borders::ALL).title("MAIN MENU"))
-        .style(Style::default().fg(Color::White));
+    let logo_widget = Paragraph::new(logo)
+        .style(Style::default().fg(Color::Cyan))
+        .alignment(Alignment::Center)
+        .block(Block::default().borders(Borders::ALL));
+    f.render_widget(logo_widget, chunks[0]);
+    
+
+    let lines = vec![
+        Line::from(Span::raw("[*] Welcome to Streameko [*]")),
+        Line::from(""),
+        Line::from("Your terminal gateway to anime streaming."),
+        Line::from(""),
+        Line::from("Use the available commands to begin your anime journey."),
+    ];
+
+    let content_height = lines.len() as u16;
+    let available_height = chunks[1].height;
+    let padding = (available_height.saturating_sub(content_height)) / 2;
+
+    let mut padded_lines = vec![];
+    for _ in 0..padding {
+        padded_lines.push(Line::raw(""));
+    }
+
+    padded_lines.extend(lines);    
+
+    let menu = Paragraph::new(padded_lines)
+        .block(Block::default().borders(Borders::ALL))
+        .style(Style::default().fg(Color::White))
+        .wrap(Wrap { trim: true })
+        .alignment(Alignment::Center);
 
     f.render_widget(menu, chunks[1]);
 
