@@ -17,6 +17,9 @@ pub fn handle_event(state: &mut AppState) -> std::io::Result<()> {
                     state.current_screen = Screen::Player;
                     state.search_active = false;
                 },
+                KeyCode::Char('t') if key.modifiers.contains(KeyModifiers::CONTROL) => {
+                    state.toggle_theme();
+                }
                 KeyCode::Char('q') if key.modifiers.contains(KeyModifiers::CONTROL) => state.quit(),
                 
                 KeyCode::Char(c) if key.modifiers.is_empty() => {
