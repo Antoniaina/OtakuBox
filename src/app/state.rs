@@ -1,4 +1,4 @@
-// #[derive(Default)]
+#[derive(PartialEq)]
 pub enum Screen {
     Home,
     Search,
