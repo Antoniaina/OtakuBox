@@ -26,7 +26,7 @@ pub fn run () -> Result<(), Box<dyn std::error::Error>> {
     let mut state = AppState::new();
 
     while state.running {
-        terminal.draw(|f| ui::draw(f))?;
+        terminal.draw(|f| ui::draw(f, &state))?;
         handle_event(&mut state)?;
     }
 
