@@ -7,6 +7,7 @@ pub fn handle_event(state: &mut AppState) -> std::io::Result<()> {
             match key.code {
                 KeyCode::Char('h') if key.modifiers.contains(KeyModifiers::CONTROL) => {
                     state.current_screen = Screen::Home;
+                    state.search_active = false;
                 },
                 KeyCode::Char('s') if key.modifiers.contains(KeyModifiers::CONTROL) => {
                     state.current_screen = Screen::Search;
@@ -14,8 +15,18 @@ pub fn handle_event(state: &mut AppState) -> std::io::Result<()> {
                 },
                 KeyCode::Char('p') if key.modifiers.contains(KeyModifiers::CONTROL) => {
                     state.current_screen = Screen::Player;
+                    state.search_active = false;
                 },
                 KeyCode::Char('q') if key.modifiers.contains(KeyModifiers::CONTROL) => state.quit(),
+                
+                KeyCode::Char(c) if key.modifiers.is_empty() => {
+                    if state.current_screen == Screen::Search {
+                        state.search_input.push(c);
+                    }
+                },
+                KeyCode::Backspace => {
+                    state.search_input.pop();
+                }
                 _ => {},
             }
         }
