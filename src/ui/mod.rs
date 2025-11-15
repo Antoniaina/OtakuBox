@@ -18,7 +18,6 @@ pub fn draw(f: &mut Frame, state: &AppState) {
     }
 }
 
-// Fonction utilitaire pour dessiner le footer de navigation de base
 pub fn draw_navigation_footer(f: &mut Frame, area: Rect, additional_commands: Option<Vec<Line>>) {
     let mut footer_lines = vec![
         Line::from(vec![
@@ -49,7 +48,6 @@ pub fn draw_navigation_footer(f: &mut Frame, area: Rect, additional_commands: Op
         ]),
     ];
 
-    // Ajouter les commandes supplémentaires si fournies
     if let Some(additional) = additional_commands {
         footer_lines.push(Line::from(""));
         footer_lines.extend(additional);

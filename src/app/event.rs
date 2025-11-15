@@ -12,6 +12,7 @@ pub fn handle_event(state: &mut AppState) -> std::io::Result<()> {
                 KeyCode::Char('s') if key.modifiers.contains(KeyModifiers::CONTROL) => {
                     state.current_screen = Screen::Search;
                     state.search_active = true;
+                    state.selected_result_index = None;
                 },
                 KeyCode::Char('p') if key.modifiers.contains(KeyModifiers::CONTROL) => {
                     state.current_screen = Screen::Player;
@@ -22,11 +23,56 @@ pub fn handle_event(state: &mut AppState) -> std::io::Result<()> {
                 KeyCode::Char(c) if key.modifiers.is_empty() => {
                     if state.current_screen == Screen::Search {
                         state.search_input.push(c);
+                        state.selected_result_index = None;
+                        state.update_search_results();
                     }
                 },
                 KeyCode::Backspace => {
-                    state.search_input.pop();
-                }
+                    if state.current_screen == Screen::Search {
+                        state.search_input.pop();
+                        state.selected_result_index = None;
+                        state.update_search_results();
+                    }
+                },
+                KeyCode::Up => {
+                    if state.current_screen == Screen::Search && !state.search_results.is_empty() {
+                        match state.selected_result_index {
+                            Some(idx) if idx > 0 => {
+                                state.selected_result_index = Some(idx - 1);
+                            },
+                            Some(_) => {
+                                state.selected_result_index = Some(state.search_results.len() - 1);
+                            },
+                            None => {
+                                state.selected_result_index = Some(state.search_results.len() - 1);
+                            }
+                        }
+                    }
+                },
+                KeyCode::Down => {
+                    if state.current_screen == Screen::Search && !state.search_results.is_empty() {
+                        match state.selected_result_index {
+                            Some(idx) if idx < state.search_results.len() - 1 => {
+                                state.selected_result_index = Some(idx + 1);
+                            },
+                            Some(_) => {
+                                state.selected_result_index = Some(0);
+                            },
+                            None => {
+                                state.selected_result_index = Some(0);
+                            }
+                        }
+                    }
+                },
+                KeyCode::Enter => {
+                    if state.current_screen == Screen::Search {
+                        if let Some(idx) = state.selected_result_index {
+                            if idx < state.search_results.len() {
+                                let _selected = &state.search_results[idx];
+                            }
+                        }
+                    }
+                },
                 _ => {},
             }
         }
