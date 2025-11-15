@@ -2,7 +2,7 @@ use ratatui::{
     layout::{Alignment, Constraint, Direction, Layout},
     style::{Color, Modifier, Style},
     text::{Line, Span},
-    widgets::{Block, Borders, List, ListItem, Paragraph},
+    widgets::{Block, Borders, List, ListItem, ListState, Paragraph},
     Frame
 };
 
@@ -92,9 +92,31 @@ pub fn draw_search(f: &mut Frame, state: &AppState) {
                         .add_modifier(Modifier::BOLD)
                 ))
         )
-        .style(Style::default().fg(Color::White));
+        .style(Style::default().fg(Color::White))
+        .highlight_style(
+            Style::default()
+                .fg(Color::Yellow)
+                .bg(Color::DarkGray)
+                .add_modifier(Modifier::BOLD)
+        );
 
-    f.render_widget(results_list, chunks[1]);
+    let mut list_state = ListState::default();
+    list_state.select(state.selected_result_index);
 
-    ui::draw_navigation_footer(f, chunks[2], None);
+    f.render_stateful_widget(results_list, chunks[1], &mut list_state);
+
+    let additional_commands = vec![
+        Line::from(vec![
+            Span::styled("  [", Style::default().fg(Color::DarkGray)),
+            Span::styled("↑/↓", Style::default().fg(Color::Yellow)),
+            Span::styled("] ", Style::default().fg(Color::DarkGray)),
+            Span::styled("Navigate  ", Style::default().fg(Color::White)),
+            Span::styled("│ ", Style::default().fg(Color::DarkGray)),
+            Span::styled("[", Style::default().fg(Color::DarkGray)),
+            Span::styled("Enter", Style::default().fg(Color::Yellow)),
+            Span::styled("] ", Style::default().fg(Color::DarkGray)),
+            Span::styled("Select", Style::default().fg(Color::White)),
+        ]),
+    ];
+    ui::draw_navigation_footer(f, chunks[2], Some(additional_commands));
 }

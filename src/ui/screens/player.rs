@@ -206,7 +206,7 @@ pub fn draw_player(f: &mut Frame, _state: &AppState) {
 
     let controls_lines = vec![
         Line::from(vec![
-            Span::styled("⌨️  ", Style::default().fg(Color::Cyan)),
+            Span::styled("[*]  ", Style::default().fg(Color::Cyan)),
             Span::styled("Player Controls", Style::default().fg(Color::LightCyan).add_modifier(Modifier::BOLD)),
         ]),
         Line::from(""),
